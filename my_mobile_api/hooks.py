@@ -1,9 +1,10 @@
 app_name = "my_mobile_api"
 app_title = "My Mobile Api"
 app_publisher = "Dukes"
-app_description = "Safi pro mobile app for connecting laundry srrvice providers to users who need cleaning services"
+app_description = "Safi pro mobile app for connecting laundry service providers"
 app_email = "davidmutumwamulinge@gmail.com"
 app_license = "mit"
+app_version = "1.0.0"
 
 # Apps
 # ------------------
