@@ -2,7 +2,7 @@ import frappe
 
 @frappe.whitelist(allow_guest=True)
 def verify_and_signup(email=None, full_name=None, phone=None, password=None):
-    # This version does NOT require OTP to match your current Flutter UI
+    # This matches your Flutter fields: Name, Email, Phone, Password
     if not all([email, full_name, phone, password]):
         frappe.throw("Required: Email, Full Name, Phone, and Password.")
 
@@ -21,7 +21,7 @@ def verify_and_signup(email=None, full_name=None, phone=None, password=None):
             "send_welcome_email": 0
         })
         
-        # This bypasses the Guest permission issues in the Desk
+        # This bypasses the Guest permission issues
         user.insert(ignore_permissions=True)
         user.add_roles("Customer")
         
