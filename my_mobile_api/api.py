@@ -2,12 +2,16 @@ import frappe
 
 @frappe.whitelist(allow_guest=True)
 def register_user(email=None, full_name=None, phone=None, password=None):
-    # This matches your UI exactly. NO OTP REQUIRED.
+    # We use .strip() to handle any accidental spaces from the mobile keyboard
+    email = email.strip() if email else None
+    full_name = full_name.strip() if full_name else None
+    phone = phone.strip() if phone else None
+
     if not all([email, full_name, phone, password]):
         frappe.throw("All fields are required: Email, Name, Phone, and Password.")
 
     if frappe.db.exists("User", email):
-        frappe.throw("This email is already taken.")
+        frappe.throw("This email is already registered.")
 
     try:
         user = frappe.get_doc({
