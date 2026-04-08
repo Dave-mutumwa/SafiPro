@@ -2,7 +2,7 @@ import frappe
 
 @frappe.whitelist(allow_guest=True)
 def verify_and_signup(email=None, full_name=None, phone=None, password=None):
-    # Matches: Name, Email, Phone, Password from your Flutter screen
+    # This version ignores OTP and matches your Flutter screen
     if not all([email, full_name, phone, password]):
         frappe.throw("Missing required information (Email, Name, Phone, or Password).")
 
@@ -21,7 +21,7 @@ def verify_and_signup(email=None, full_name=None, phone=None, password=None):
             "send_welcome_email": 0
         })
         
-        # This bypasses the Guest Role permission issue
+        # ignore_permissions=True bypasses the Desk Permission error
         user.insert(ignore_permissions=True)
         user.add_roles("Customer")
         
