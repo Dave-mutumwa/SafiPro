@@ -1,17 +1,9 @@
 import frappe
 
 @frappe.whitelist(allow_guest=True)
-def register_user(**kwargs):
-    # This captures whatever Flutter sends and maps it correctly
-    email = kwargs.get('email')
-    # It will look for 'full_name', then 'name' if full_name is missing
-    full_name = kwargs.get('full_name') or kwargs.get('name')
-    phone = kwargs.get('phone') or kwargs.get('mobile_no')
-    password = kwargs.get('password')
-
+def register_user(email=None, full_name=None, phone=None, password=None):
     if not all([email, full_name, phone, password]):
-        # This will tell us exactly what the server actually received
-        frappe.throw(f"Missing fields. Received: {list(kwargs.keys())}")
+        frappe.throw("Please provide all fields: Email, Name, Phone, and Password")
 
     if frappe.db.exists("User", email):
         frappe.throw("An account with this email already exists.")
