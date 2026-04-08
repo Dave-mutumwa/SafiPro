@@ -1,10 +1,10 @@
 import frappe
 
 @frappe.whitelist(allow_guest=True)
-def verify_and_signup(email=None, full_name=None, phone=None, password=None, otp=None):
-    # Match the fields in your Flutter UI
+def verify_and_signup(email=None, full_name=None, phone=None, password=None):
+    # Matches: Name, Email, Phone, Password from your Flutter screen
     if not all([email, full_name, phone, password]):
-        frappe.throw("Please fill in all fields (Email, Name, Phone, and Password).")
+        frappe.throw("Missing required information (Email, Name, Phone, or Password).")
 
     if frappe.db.exists("User", email):
         frappe.throw("An account with this email already exists")
@@ -21,7 +21,7 @@ def verify_and_signup(email=None, full_name=None, phone=None, password=None, otp
             "send_welcome_email": 0
         })
         
-        # ignore_permissions=True fixes the Guest Role issue
+        # This bypasses the Guest Role permission issue
         user.insert(ignore_permissions=True)
         user.add_roles("Customer")
         
