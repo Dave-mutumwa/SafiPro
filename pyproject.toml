@@ -4,7 +4,12 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "my_mobile_api"
-dynamic = ["version", "description"]
+authors = [
+    {name = "David", email = "dukesdavidwork@gmail.com"},
+]
+description = "Mobile API for Safi Pro"
+requires-python = ">=3.10"
+dynamic = ["version"]
 
 [tool.flit.module]
 name = "my_mobile_api"
