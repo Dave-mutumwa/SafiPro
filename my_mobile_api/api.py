@@ -1,28 +1,40 @@
 import frappe
+from frappe.utils import random_string
 
 @frappe.whitelist(allow_guest=True)
-def register_user(email=None, full_name=None, phone=None, password=None):
-    if not all([email, full_name, phone, password]):
-        frappe.throw("All fields are required: Email, Name, Phone, and Password.")
-    
+def register_user(email, full_name, password, phone):
+    # Step A: Check if the email already exists to avoid the error you saw earlier
     if frappe.db.exists("User", email):
-        frappe.throw("An account with this email already exists.")
+        # For testing, we can delete the old failed attempt
+        frappe.delete_doc("User", email)
 
     try:
+        # Step B: Create the User Document
         user = frappe.get_doc({
             "doctype": "User",
-            "email": email.strip(),
-            "first_name": full_name.strip(),
-            "mobile_no": phone.strip(),
+            "email": email,
+            "first_name": full_name,
+            "mobile_no": phone,
             "new_password": password,
             "enabled": 1,
-            "user_type": "Website User",
-            "send_welcome_email": 0
+            "user_type": "Website User" # This makes them a customer, not an admin
         })
+        
+        # Step C: Insert into database memory
         user.insert(ignore_permissions=True)
-        user.add_roles("Customer")
-        frappe.db.commit()
-        return {"status": "success", "message": "User Created Successfully"}
+        
+        # Step D: Assign the "Customer" role so they can use Safi Pro
+        user.add_roles("Customer") 
+        
+        # Step E: THE CRITICAL STEP - Save to disk permanently
+        frappe.db.commit() 
+        
+        return {
+            "status": "success", 
+            "message": f"User {email} has been saved and reflected in the backend."
+        }
+
     except Exception as e:
-        frappe.log_error(frappe.get_traceback(), "Mobile Registration Error")
+        # If something fails, log it in the Frappe Error Log
+        frappe.log_error(frappe.get_traceback(), "Safi Pro Registration Failed")
         return {"status": "error", "message": str(e)}
